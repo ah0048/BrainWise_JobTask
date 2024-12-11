@@ -14,7 +14,6 @@ This is the backend for an Employee Management System built with Django and Djan
     - [Departments](#departments)
     - [Employees](#employees)
 4. [Role-Based Access Control (RBAC)](#role-based-access-control-rbac)
-5. [Known Issues](#known-issues)
 
 ## Features
 - User authentication using token-based authentication (via Django Rest Framework Token Authentication).
