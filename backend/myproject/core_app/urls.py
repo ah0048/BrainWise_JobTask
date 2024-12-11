@@ -3,8 +3,9 @@ from . import views
 
 urlpatterns = [
 
-    # login URL
+    # login and logout URLs
     path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
 
     # Company URLs
     path('companies/create/', views.company_create, name='company-create'),

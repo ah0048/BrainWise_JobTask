@@ -40,6 +40,18 @@ def company_create(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout_view(request):
+    try:
+        # Get the user's token from the request
+        token = Token.objects.get(user=request.user)
+        # Delete the token, effectively logging the user out
+        token.delete()
+        return Response({"message": "Logout successful"}, status=200)
+    except Token.DoesNotExist:
+        return Response({"error": "No active session found"}, status=400)
+
 # View to get a list of all companies
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, IsAdminOrManagerOrEmployee])
