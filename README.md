@@ -52,6 +52,7 @@ This is the backend for an Employee Management System built with Django and Djan
 
 4. Run migrations:
     ```bash
+    cd myproject
     python manage.py migrate
     ```
 
