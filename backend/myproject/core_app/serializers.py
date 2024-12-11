@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import Company, Department, Employee, User
+from django.utils import timezone
+
 
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,9 +14,17 @@ class DepartmentSerializer(serializers.ModelSerializer):
         fields = ['id', 'company', 'name', 'num_employees']
 
 class EmployeeSerializer(serializers.ModelSerializer):
+    days_employed = serializers.SerializerMethodField()
+
     class Meta:
         model = Employee
         fields = ['id', 'company', 'department', 'status', 'name', 'email', 'mobile_number', 'address', 'designation', 'hired_on', 'days_employed']
+
+    def get_days_employed(self, obj):
+        # Calculate days employed based on the hired_on date
+        if obj.hired_on:
+            return (timezone.now().date() - obj.hired_on).days
+        return 0
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

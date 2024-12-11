@@ -2,7 +2,12 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+
+    # login URL
+    path('login/', views.login_view, name='login'),
+
     # Company URLs
+    path('companies/create/', views.company_create, name='company-create'),
     path('companies/', views.company_list, name='company-list'),
     path('companies/<int:pk>/', views.company_detail, name='company-detail'),
     path('companies/<int:pk>/update/', views.company_update, name='company-update'),
