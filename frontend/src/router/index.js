@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import LandingPage from "@/views/LandingPage.vue";
-import HomePage from "@/views/HomePage.vue"; // Import HomePage
-// import store from "@/store"; // Import Vuex store for role-based route guard
+import HomePage from "@/views/HomePage.vue"; 
+import CompanyPage from "@/views/CompanyPage.vue"; // Import CompanyPage
 
 const routes = [
   {
@@ -14,11 +14,22 @@ const routes = [
     name: "HomePage",
     component: HomePage,
     beforeEnter: (to, from, next) => {
-      // Check if the user is authenticated (check if token exists in localStorage)
       if (!localStorage.getItem("token")) {
-        next({ name: "LandingPage" }); // Redirect to login page if not authenticated
+        next({ name: "LandingPage" });
       } else {
-        next(); // Proceed to the HomePage if authenticated
+        next();
+      }
+    },
+  },
+  {
+    path: "/companies",
+    name: "CompanyPage",
+    component: CompanyPage,
+    beforeEnter: (to, from, next) => {
+      if (!localStorage.getItem("token")) {
+        next({ name: "LandingPage" });
+      } else {
+        next();
       }
     },
   },
