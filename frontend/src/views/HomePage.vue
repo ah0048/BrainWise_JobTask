@@ -10,6 +10,7 @@
       <div class="summary-item">
         <h3>Departments</h3>
         <p>{{ numberOfDepartments }}</p>
+        <router-link to="/departments">View Department</router-link>
       </div>
       <div class="summary-item">
         <h3>Employees</h3>
