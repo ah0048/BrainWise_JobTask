@@ -15,6 +15,7 @@
       <div class="summary-item">
         <h3>Employees</h3>
         <p>{{ numberOfEmployees }}</p>
+        <router-link to="/employees">View Employees</router-link>
       </div>
     </div>
   </div>

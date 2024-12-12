@@ -221,12 +221,16 @@ def employee_create(request):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated, IsAdminOrManager])
 def employee_update(request, pk):
+    """
+    Update an employee's details. Accepts partial updates via PUT.
+    """
     employee = get_object_or_404(Employee, pk=pk)
-    serializer = EmployeeSerializer(employee, data=request.data)
+    serializer = EmployeeSerializer(employee, data=request.data, partial=True)  # Allow partial updates
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # View to delete an employee (Admin and Manager only)
 @api_view(['DELETE'])
