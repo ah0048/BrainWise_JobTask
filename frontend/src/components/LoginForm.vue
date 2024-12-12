@@ -40,8 +40,11 @@
           }
   
           const data = await response.json();
-          alert("Login Successful!");
           localStorage.setItem("token", data.token); // Save token for authenticated requests
+          localStorage.setItem("userRole", data.userRole); // Save user role for conditional rendering
+  
+          // Use this.$router to redirect after successful login
+          this.$router.push("/home"); // Redirect to the HomePage route
         } catch (error) {
           alert(error.message);
         }

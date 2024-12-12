@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 from django.utils import timezone
+from django.contrib.auth.hashers import make_password
 
 class User(AbstractUser):
     ROLE_CHOICES = [
@@ -15,10 +16,10 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['username']
 
     def save(self, *args, **kwargs):
-        # Hash the password if it's being set
-        if self.password:
-            self.set_password(self.password)
-        super(User, self).save(*args, **kwargs)
+        # Always hash the password if it doesn't already look like a hashed password
+        if self.password and not self.password.startswith('pbkdf2_sha256$'):
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
 
 
 class Company(models.Model):
