@@ -347,8 +347,17 @@ export default {
     async createEmployee() {
       const token = localStorage.getItem("token");
 
-      // Format the hired_on date before submitting
-      this.form.hired_on = this.formatDate(this.form.hired_on);
+      // Create a new employee object without the hired_on field
+      const newEmployee = {
+        name: this.form.name,
+        email: this.form.email,
+        mobile_number: this.form.mobile_number,
+        address: this.form.address,
+        designation: this.form.designation,
+        department: parseInt(this.form.department),
+        company: parseInt(this.form.company),
+        status: "application_received",
+      };
 
       const response = await fetch(`${process.env.VUE_APP_API_URL}/employees/create/`, {
         method: "POST",
@@ -356,11 +365,7 @@ export default {
           Authorization: `Token ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          ...this.form,
-          company: parseInt(this.form.company),
-          department: parseInt(this.form.department)
-        }),
+        body: JSON.stringify(newEmployee),
       });
 
       if (response.ok) {
