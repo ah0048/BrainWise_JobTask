@@ -7,6 +7,11 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
 
+    # User endpoints
+    path('users/', views.get_all_users, name='get-all-users'),
+    path('users/<int:id>/', views.get_user, name='get-user'),
+    path('users/<int:id>/update/', views.update_user, name='update-user'),
+
     # Company URLs
     path('companies/create/', views.company_create, name='company-create'),
     path('companies/', views.company_list, name='company-list'),

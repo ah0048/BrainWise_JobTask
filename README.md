@@ -41,7 +41,7 @@ This is the backend for an Employee Management System built with Django and Djan
 2. Create a virtual environment:
     ```bash
     cd backend
-    python -m venv env
+    python -m venv venv
     source env/bin/activate  # On Windows, use 'env\Scripts\activate'
     ```
 

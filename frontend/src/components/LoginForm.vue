@@ -42,7 +42,7 @@
           const data = await response.json();
           localStorage.setItem("token", data.token); // Save token for authenticated requests
           localStorage.setItem("userRole", data.userRole); // Save user role for conditional rendering
-  
+          localStorage.setItem("userId", data.userId); // Save user ID for user-specific requests
           // Use this.$router to redirect after successful login
           this.$router.push("/home"); // Redirect to the HomePage route
         } catch (error) {

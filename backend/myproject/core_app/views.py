@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
+from django.contrib.auth import get_user_model
 from django.views.decorators.csrf import csrf_exempt
 from .models import Company, Department, Employee
-from .serializers import CompanySerializer, DepartmentSerializer, EmployeeSerializer
+from .serializers import CompanySerializer, DepartmentSerializer, EmployeeSerializer, UserSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -26,20 +27,11 @@ def login_view(request):
     if user is not None:
         # Get or create a token for the user
         token, created = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key, 'userRole': user.role}, status=status.HTTP_200_OK)
+        return Response({'token': token.key, 'userRole': user.role, 'userId': user.id}, status=status.HTTP_200_OK)
     else:
         return Response({'error': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
 
-# View to create a company (Admin only)
-@api_view(['POST'])
-@permission_classes([IsAuthenticated, IsAdmin])
-def company_create(request):
-    serializer = CompanySerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+# logout view
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def logout_view(request):
@@ -51,6 +43,73 @@ def logout_view(request):
         return Response({"message": "Logout successful"}, status=200)
     except Token.DoesNotExist:
         return Response({"error": "No active session found"}, status=400)
+
+
+User = get_user_model()
+
+# view to get all users
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_all_users(request):
+    """
+    Retrieve all users. Restricted to authenticated users.
+    """
+    if request.user.role != 'admin':
+        return Response({"detail": "Not authorized to access this resource."}, status=status.HTTP_403_FORBIDDEN)
+
+    users = User.objects.all()
+    serializer = UserSerializer(users, many=True)
+    return Response(serializer.data)
+
+# view to get a specific user
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user(request, id):
+    """
+    Retrieve details of a specific user.
+    """
+    try:
+        user = User.objects.get(pk=id)
+        if user != request.user and request.user.role != 'admin':
+            return Response({"detail": "Not authorized to access this resource."}, status=status.HTTP_403_FORBIDDEN)
+        
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+    except User.DoesNotExist:
+        return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+# view to edit a specific user
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_user(request, id):
+    """
+    Update details of a specific user.
+    """
+    try:
+        user = User.objects.get(pk=id)
+        if user != request.user and request.user.role != 'admin':
+            return Response({"detail": "Not authorized to access this resource."}, status=status.HTTP_403_FORBIDDEN)
+        
+        data = request.data
+        serializer = UserSerializer(user, data=data, partial=True)  # Allow partial updates
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except User.DoesNotExist:
+        return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+
+
+# View to create a company (Admin only)
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, IsAdmin])
+def company_create(request):
+    serializer = CompanySerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # View to get a list of all companies
 @api_view(['GET'])

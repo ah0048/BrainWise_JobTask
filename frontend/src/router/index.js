@@ -3,6 +3,7 @@ import LandingPage from "@/views/LandingPage.vue";
 import HomePage from "@/views/HomePage.vue"; 
 import CompanyPage from "@/views/CompanyPage.vue"; // Import CompanyPage
 import DepartmentPage from "@/views/DepartmentPage.vue"; // Import DepartmentPage
+import UserAccountPage from "@/views/UserAccountPage.vue";
 
 const routes = [
   {
@@ -38,6 +39,18 @@ const routes = [
     path: "/departments",
     name: "DepartmentPage",
     component: DepartmentPage,
+    beforeEnter: (to, from, next) => {
+      if (!localStorage.getItem("token")) {
+        next({ name: "LandingPage" });
+      } else {
+        next();
+      }
+    },
+  },
+  {
+    path: "/account",
+    name: "UserAccountPage",
+    component: UserAccountPage,
     beforeEnter: (to, from, next) => {
       if (!localStorage.getItem("token")) {
         next({ name: "LandingPage" });
